@@ -28,9 +28,9 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  config.vm.define "ploppy_net1_box4" do |pb|
+  config.vm.define "ploppy_net1_net2_bridge" do |pb|
     config.vm.provider "virtualbox" do |vb|
-      vb.name = "ploppy_net1_box4"
+      vb.name = "ploppy_net1_net2_bridge"
     end
     pb.vm.network "private_network", ip: "192.168.33.4",
       virtualbox__intnet: "ploppy_net1"
@@ -38,9 +38,9 @@ Vagrant.configure(2) do |config|
       virtualbox__intnet: "ploppy_net2"
   end
 
-  config.vm.define "ploppy_net2_box4" do |pb|
+  config.vm.define "ploppy_net2_net3_bridge" do |pb|
     config.vm.provider "virtualbox" do |vb|
-      vb.name = "ploppy_net2_box4"
+      vb.name = "ploppy_net2_net3_bridge"
     end
     pb.vm.network "private_network", ip: "192.168.34.4",
       virtualbox__intnet: "ploppy_net2"
