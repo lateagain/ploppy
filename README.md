@@ -46,6 +46,10 @@ The name of the network to join
 The ip.ad.re.ss:port pair identifying a peer already on the network,
 and which this client can talk to.
 
+* --dir
+
+The directory to use. Must either not exist or be empty.
+
 * --secret
 
 As 'ploppy create'
