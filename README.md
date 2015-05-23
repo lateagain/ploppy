@@ -98,6 +98,9 @@ in the event that a message needs to cascade around the network. It is
 used to detect and prevent infinite loops. command ids are cached for a
 few minutes.
 
+[should we add timestamps? this requires high precision and that all
+hosts have their clocks set correctly]
+
 ### Network discovery
 
 * HELLO
