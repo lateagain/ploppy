@@ -12,7 +12,7 @@ Most commands take arguments of the form `--name value`.
 
 ## ploppy create
 
-Creates a new network of file-sharing hosts.
+Creates a new network of file-sharing hosts, and starts a server.
 
 ### --name
 
@@ -35,7 +35,7 @@ encrypting network traffic.
 
 ## plopbox join
 
-Join an existingi network 
+Join an existing network and starts a server
 
 ### --name
 
@@ -51,6 +51,8 @@ and which this client can talk to.
 As 'ploppy create'
 
 ## ploppy leave
+
+Leaves the network and stops the server
 
 ### --name
 
