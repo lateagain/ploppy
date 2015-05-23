@@ -125,3 +125,50 @@ As ICANSEE, except that it is an announcement that a peer has gone away. It shou
 * PING
 
 No arguments, just used to periodically verify that a network connection is up. If it fails then an ICANTSEE should be sent to each immediate peer.
+
+### File change notification
+
+* LIST
+
+No extra data, so is formatted as 'LIST 0' to signify that the data segment of the command is empty. Will result in a slew of IHAVEs.
+
+* IHAVE
+
+  {
+    "type": "file", # or directory
+    "mode": [number from 0 to 7],
+    # the following for files only
+    "blocksize": [typically 1024]
+    "blocks: [
+      "hash1",
+      "hash2",
+      ...
+    ]
+  }
+
+Note that the mode is only from 0 to 7 - we're only interested in the
+owner's permissions, because groups and other users don't translate well
+between machines, and this is intended to be run as a non-root user.
+
+* IMOVED
+
+  {
+    "oldpath": "foo/bar/baz",
+    "newpath": "barf/quux"
+  }
+
+* IDELETED
+
+  { "oldpath": "foo/bar/baz" }
+
+### Block retrieval
+
+* IWANT
+
+  [ "hash1", "hash2", ... ]
+
+This will result in a series of HEREISes
+
+* HEREIS
+
+  { "block": "lots of data" }
