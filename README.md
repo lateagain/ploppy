@@ -10,66 +10,118 @@ ploppy is a peer-to-peer file replication and distribution system which has no c
 
 Most commands take arguments of the form `--name value`.
 
-## ploppy create
+### ploppy create
 
 Creates a new network of file-sharing hosts, and starts a server.
 
-### --name
+* --name
 
 A human-readable name for this network.
 
-### --dir
+* --dir
 
 The directory to share. If it already exists *everything in it will be
 shared*. If it doesn't exist it will be created.
 
-### --admin
+* --admin
 
 NYI, email address of the person responsible for the network. Used to notify
 him of problems.
 
-### --secret
+* --secret
 
 NYI, a password/key to use for controlling access to the network and
 encrypting network traffic.
 
-## plopbox join
+### plopbox join
 
 Join an existing network and starts a server
 
-### --name
+* --name
 
 The name of the network to join
 
-### --peer
+* --peer
 
 The ip.ad.re.ss:port pair identifying a peer already on the network,
 and which this client can talk to.
 
-### --secret
+* --secret
 
 As 'ploppy create'
 
-## ploppy leave
+### ploppy leave
 
 Leaves the network and stops the server
 
-### --name
+* --name
 
 The name of the network to leave, if the client is on more than one
 
-### --delete
+* --delete
 
 Takes no value, delete the shared directory on leaving the network.
 
-## ploppy network
+### ploppy network
 
 Show all hosts on the network.
 
-## ploppy status
+### ploppy status
 
 List all files that this host knows about and their transfer status
 
-## ploppy resolve
+### ploppy resolve
 
 Resolve conflicting changes, NYI
+
+## Protocol
+
+All data is transferred using TCP. There is no particular allocated port.
+Clients will pick their own port and notify peers which one they are using.
+The protocol is aggressively asynchronous. For example, when a user
+creates a new file on a host, the host will announce that to its peers,
+but won't send it until asked. Arguments to commands are transmitted as
+a JSON hash and typically have no immediate response.
+
+Commands are formatted thus, seperated by spaces
+
+  COMMAND bytes message
+
+where 'bytes' is the length of the message.
+
+All commands include an 'id' field, a UUID, which is passed on to peers
+in the event that a message needs to cascade around the network. It is
+used to detect and prevent infinite loops. command ids are cached for a
+few minutes.
+
+### Network discovery
+
+* HELLO
+
+  {
+    "name": "The name of the network the host is on",
+    "uuid": "to disambiguate when there are multiple NATted networks involved",
+    "address: "192.168.0.1:61582",
+  }
+
+It should result in a cascade of 'ICANSEE's and 'IKNOWABOUT's.
+
+* ICANSEE
+
+This is exactly the same as HELLO except that it is announcing the
+existence of another peer that the host can talk to directly instead of
+announcing its own existence. It should result in a cascade of 'IKNOWABOUT's.
+
+* IKNOWABOUT
+
+As ICANSEE, except that it is a host that the peer can *not* talk to
+directly but has merely heard about from other peers. The 'id' field is
+used to prevent infinite recursion. It should result in a cascade of 'IKNOWABOUT's.
+
+* ICANTSEE
+
+As ICANSEE, except that it is an announcement that a peer has gone away. It should result in a cascade of 'ICANTSEE's.
+
+* PING
+
+No arguments, just used to periodically verify that a network connection is up. If it fails then an ICANTSEE should be sent to each immediate peer.
