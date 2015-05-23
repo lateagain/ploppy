@@ -104,7 +104,7 @@ few minutes.
     "address: "192.168.0.1:61582",
   }
 
-It should result in a cascade of 'ICANSEE's and 'IKNOWABOUT's.
+It should result in the recipient generating a cascade of 'ICANSEE's and 'IKNOWABOUT's.
 
 * ICANSEE
 
