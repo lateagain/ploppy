@@ -11,7 +11,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = "deb/jessie-amd64"
 
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = "256"
+    vb.memory = "512"
   end
 
   NETWORKS.each do |(netname, baseaddr)|
@@ -48,11 +48,17 @@ Vagrant.configure(2) do |config|
       virtualbox__intnet: "ploppy_net3"
   end
     
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   sudo apt-get update
-  #   sudo apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+    sudo chmod 0600 /swapfile
+    sudo mkswap /swapfile
+    sudo bash -c 'echo /swapfile none swap defaults 0 0 >>/etc/fstab'
+    sudo swapon /swapfile
+    curl -L http://install.perlbrew.pl|bash
+    source ~/perl5/perlbrew/etc/bashrc
+    echo source ~/perl5/perlbrew/etc/bashrc >> .profile
+    perlbrew init
+    perlbrew install perl-5.20.2
+    perlbrew switch perl-5.20.2
+  SHELL
 end
