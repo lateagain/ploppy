@@ -80,18 +80,12 @@ Resolve conflicting changes, NYI
 
 ## Protocol
 
-All data is transferred using TCP. There is no particular allocated port.
+All data is transferred using HTTP POST. There is no particular allocated port.
 Clients will pick their own port and notify peers which one they are using.
 The protocol is aggressively asynchronous. For example, when a user
 creates a new file on a host, the host will announce that to its peers,
 but won't send it until asked. Arguments to commands are transmitted as
 a JSON hash and typically have no immediate response.
-
-Commands are formatted thus, seperated by spaces
-
-  COMMAND bytes message
-
-where 'bytes' is the length of the message.
 
 All commands include an 'id' field, a UUID, which is passed on to peers
 in the event that a message needs to cascade around the network. It is
@@ -137,7 +131,7 @@ No arguments, just used to periodically verify that a network connection is up. 
 
 * LIST
 
-No extra data, so is formatted as 'LIST 0' to signify that the data segment of the command is empty. Will result in a slew of IHAVEs.
+No extra data. Request that the peer dump its brane, resulting in a slew of IHAVEs.
 
 * IHAVE
 
