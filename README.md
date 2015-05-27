@@ -80,14 +80,14 @@ Resolve conflicting changes, NYI
 
 ## Protocol
 
-All data is transferred using HTTP POST. There is no particular allocated port.
+All data is transferred using ZeroMQ. There is no particular allocated port.
 Clients will pick their own port and notify peers which one they are using.
-The protocol is aggressively asynchronous. For example, when a user
-creates a new file on a host, the host will announce that to its peers,
-but won't send it until asked. Arguments to commands are transmitted as
-a JSON hash and typically have no immediate response.
+The protocol is aggressively asynchronous. For example, when a user creates a
+new file on a host, the host will announce that to its peers, but won't send it
+until asked. Messages are transmitted as a JSON hash and typically have no
+immediate response.
 
-All commands include an 'id' field, a UUID, which is passed on to peers
+Messages always have a 'command' field and an 'id' field. The former is one of the commands listed below. The latter is a UUID, which is passed on to peers
 in the event that a message needs to cascade around the network. It is
 used to detect and prevent infinite loops. command ids are cached for a
 few minutes.
@@ -99,11 +99,11 @@ hosts have their clocks set correctly]
 
 * HELLO
 
-  {
+  `{
     "name": "The name of the network the host is on",
     "uuid": "to disambiguate when there are multiple NATted networks involved",
     "address: "192.168.0.1:61582",
-  }
+  }`
 
 It should result in the recipient generating a cascade of 'ICANSEE's and 'IKNOWABOUT's.
 
