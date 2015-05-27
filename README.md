@@ -99,11 +99,13 @@ hosts have their clocks set correctly]
 
 * HELLO
 
-  `{
-    "name": "The name of the network the host is on",
-    "uuid": "to disambiguate when there are multiple NATted networks involved",
-    "address: "192.168.0.1:61582",
-  }`
+```json
+{
+  "name": "The name of the network the host is on",
+  "uuid": "to disambiguate when there are multiple NATted networks involved",
+  "address: "192.168.0.1:61582",
+}
+```
 
 It should result in the recipient generating a cascade of 'ICANSEE's and 'IKNOWABOUT's.
 
