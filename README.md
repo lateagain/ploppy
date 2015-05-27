@@ -137,6 +137,7 @@ No extra data. Request that the peer dump its brane, resulting in a slew of IHAV
 
 * IHAVE
 
+```json
   {
     "type": "file", # or directory
     "mode": [number from 0 to 7],
@@ -148,6 +149,7 @@ No extra data. Request that the peer dump its brane, resulting in a slew of IHAV
       ...
     ]
   }
+```
 
 Note that the mode is only from 0 to 7 - we're only interested in the
 owner's permissions, because groups and other users don't translate well
@@ -155,23 +157,57 @@ between machines, and this is intended to be run as a non-root user.
 
 * IMOVED
 
+```json
   {
     "oldpath": "foo/bar/baz",
     "newpath": "barf/quux"
   }
+```
 
 * IDELETED
 
+```json
   { "oldpath": "foo/bar/baz" }
+```
 
 ### Block retrieval
 
 * IWANT
 
-  [ "hash1", "hash2", ... ]
+```json
+  { "hashes": [ "hash1", "hash2", ... ] }
+```
 
 This will result in a series of HEREISes
 
 * HEREIS
 
+```json
   { "block": "lots of data" }
+```
+
+## Daemon architecture
+
+The daemon immediately forks into two. They communicate by creating
+files in the hidden `.ploppy` directory inside the repository. One
+process listens for incoming messages from other peers (we'll call this
+the server) and the other sends messages (the client).
+
+### Server
+
+For most commands all it will do is leave instructions for the client.
+The one exception is when it receives a `HEREIS` command, in which case
+it stores the incoming block in a temp file, and, if it now has a complete
+file, writes the file to the repository.
+
+It will also listen asynchronously [NB this may become a third fork] for
+changes to the repository, using something like `File::ChangeNotify`
+[NB that may require writing an FSEvents thingy for F::CN]. Obviously
+ignoring the `.ploppy` subdir. When it spots a change it will leave
+instructions for the client.
+
+### Client
+
+This listens for changes to the `.ploppy` directory (which will all be
+file creates; deletes will be caused by the client removing completed
+tasks) and sends appropriate instructions to all peers.
