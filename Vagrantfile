@@ -60,5 +60,6 @@ Vagrant.configure(2) do |config|
     perlbrew init
     perlbrew install perl-5.20.2
     perlbrew switch perl-5.20.2
+    cpan Alien::ZMQ
   SHELL
 end
