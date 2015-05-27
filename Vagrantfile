@@ -4,7 +4,7 @@
 NETWORKS = {
     "net1" => "192.168.33.",
     "net2" => "192.168.34.",
-    "net3" => "192.168.35.",
+    "net3" => "192.168.33.",
 }
 
 Vagrant.configure(2) do |config|
@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
     end
     pb.vm.network "private_network", ip: "192.168.34.4",
       virtualbox__intnet: "ploppy_net2"
-    pb.vm.network "private_network", ip: "192.168.35.5",
+    pb.vm.network "private_network", ip: "192.168.33.5",
       virtualbox__intnet: "ploppy_net3"
   end
     
