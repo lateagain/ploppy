@@ -54,12 +54,16 @@ Vagrant.configure(2) do |config|
     sudo mkswap /swapfile
     sudo bash -c 'echo /swapfile none swap defaults 0 0 >>/etc/fstab'
     sudo swapon /swapfile
+    sudo apt-get update
+    sudo apt-get upgrade -y
+    sudo apt-get install -y g++
     curl -L http://install.perlbrew.pl|bash
     source ~/perl5/perlbrew/etc/bashrc
     echo source ~/perl5/perlbrew/etc/bashrc >> .profile
     perlbrew init
     perlbrew install perl-5.20.2
     perlbrew switch perl-5.20.2
-    cpan Alien::ZMQ
+    curl -L https://cpanmin.us | perl - App::cpanminus
+    cpanm Alien::ZMQ
   SHELL
 end
